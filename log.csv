@@ -1,0 +1,8 @@
+total_requests,today_requests,datetime,arguments,success
+1,1,2023-08-10 12:35:11.196560,"-l Boca Raton, FL, US",1
+2,1,2023-08-11 12:35:38.570029,"-l Boca Raton, FL, US",1
+3,2,2023-08-11 12:35:43.513525,"-l Boca Raton, FL, US",1
+4,3,2023-08-11 12:40:33.321805,-l Dubai,1
+5,4,2023-08-11 15:32:04.468084,-l Kaliningrad,1
+6,5,2023-08-11 15:45:05.304781,-l Krutitcy,1
+7,6,2023-08-11 15:46:18.011434,-u imperial,1
