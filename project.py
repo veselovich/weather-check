@@ -30,9 +30,9 @@ class Weather:
         if data["cod"] == 200:
             temp = data["main"]["temp"]
             description = data["weather"][0]["description"]
-            return f"The weather in {location} is {temp:.1f}°{self.units_to_temp(units)} with {description}."
+            return f"The weather in {data['name']}, {data['sys']['country']} is {temp:.1f}°{self.units_to_temp(units)} with {description}."
         else:
-            return "Weather not available."
+            sys.exit("Weather not available.")
 
     def units_to_temp(self, units):
         match units:
@@ -40,8 +40,6 @@ class Weather:
                 return "C"
             case "imperial":
                 return "F"
-            case _:
-                return "Unknown units"
 
     def __str__(self):
         return "Weather from https://openweathermap.org/"
@@ -84,18 +82,19 @@ class Forecast(Weather):
                 )
             )
         else:
-            return "Forecast not available."
+            sys.exit("Forecast not available.")
 
 
 def main():
-    log()
+    filename = "log.csv"
+    log(filename)
 
     parser = argparse.ArgumentParser(description="Shows the weather")
     parser.add_argument(
         "-l",
         "--location",
         nargs="+",
-        default=my_location(),
+        default=get_location(),
         help="location: <city>[, <state>[, <country>]]",
         type=str,
     )
@@ -110,9 +109,7 @@ def main():
 
     location = " ".join(args.location).strip()
     check_location(location)
-
-    if not args.units in ["metric", "imperial"]:
-        sys.exit("Invalid units.")
+    check_units(args.units)
 
     weather = Weather(API_KEY)
     forecast = Forecast(API_KEY)
@@ -120,11 +117,11 @@ def main():
     print()
     print(weather.get_weather(location, args.units))
     print("\nTomorrow's forecast:\n" + forecast.get_forecast(location, args.units))
-    log_success()
+    log_success(filename)
 
 
-def my_location():
-    location = geocoder.ip("me")
+def get_location(ip="me"):
+    location = geocoder.ip(ip)
 
     city = location.city if location.city else sys.exit("City is not available")
     state = location.state if location.state else sys.exit("State is not available")
@@ -141,7 +138,12 @@ def check_location(location):
         sys.exit("Invalid city name.")
 
 
-def log():
+def check_units(units):
+    if not units in ["metric", "imperial"]:
+        sys.exit("Invalid units.")
+
+
+def log(filename):
     total_requests = 0
     today_requests = 0
     fieldnames = [
@@ -153,7 +155,7 @@ def log():
     ]
 
     try:
-        with open("log.csv", "r") as file:
+        with open(filename, "r") as file:
             reader = list(csv.DictReader(file))
             last_row = reader[-1]
             total_requests = int(last_row["total_requests"])
@@ -180,8 +182,8 @@ def log():
         )
 
 
-def log_success():
-    with open("log.csv", "rb+") as file:
+def log_success(filename):
+    with open(filename, "rb+") as file:
         file.seek(-3, 2)
         file.write(b"1")
 
