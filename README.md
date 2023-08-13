@@ -1,5 +1,5 @@
 # weather-check
-#### Video Demo: [URL HERE]
+#### Video Demo: https://youtu.be/MzL9j9jpVhE
 #### Description:
 
 This project was done as the final project of the [Harvard CS50P](https://cs50.harvard.edu/python/2022/) course and meets the following requirements:
